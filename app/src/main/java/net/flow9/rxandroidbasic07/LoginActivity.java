@@ -22,17 +22,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
-        btnSign.setEnabled(false);
 
         Observable<TextViewTextChangeEvent> idEmitter = RxTextView.textChangeEvents(editEmail);
         Observable<TextViewTextChangeEvent> pwEmitter = RxTextView.textChangeEvents(editPassword);
 
-        Observable.combineLatest(idEmitter, pwEmitter,
-            (idEvent, pwEvent) -> {
-                boolean checkId = idEvent.text().length() >= 5;
-                boolean checkPw = pwEvent.text().length() >= 8;
-                return checkId && checkPw;
-            }
+        Observable.combineLatest(idEmitter,pwEmitter,
+                (idEvent, pwEvent) -> idEvent.text().length() >= 5 && pwEvent.text().length() >= 8
         ).subscribe(
             flag -> btnSign.setEnabled(flag)
         );
@@ -42,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
         btnSign = (Button) findViewById(R.id.btnSign);
+        btnSign.setEnabled(false);
     }
 }
 
